@@ -1,10 +1,13 @@
-import requests
+import testModules
+from time import sleep
+from time import gmtime, strftime
 
+prices = {}  # Historical Data
+initialCapital = 0  # Test Cash
 
-def get_prices():
-    response = requests.get("https://www.coinspot.com.au/pubapi/latest")
-    return response.text
-
-
+# Driver
 if __name__ == '__main__':
-    print(get_prices())
+    # Store price at 10s
+    while True:
+        testModules.store_price(strftime("%Y-%m-%d %H:%M:%S", gmtime()), prices)
+        sleep(10)
