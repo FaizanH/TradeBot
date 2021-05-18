@@ -1,4 +1,4 @@
-# TradeBot
+# trade-bot
 ### Consumes Coinspot API to automate trades
 
 ### Basic Usage
