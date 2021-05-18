@@ -4,12 +4,12 @@ import redis
 
 
 def get_latest_eth():
-    cs_prices = requests.get("https://www.coinspot.com.au/pubapi/latest/ETH").json()['prices']
+    cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
     return cs_prices['ask']
 
 
 def get_latest_prices():
-    response = requests.get("https://www.coinspot.com.au/pubapi/latest")
+    response = requests.get('https://www.coinspot.com.au/pubapi/latest')
     return response.text
 
 
@@ -19,3 +19,18 @@ def store_price(currtime, storage):
 
 
 # Devise MACD Strategy
+def should_buy():
+    return True
+
+
+def should_sell():
+    return True
+
+
+# Getters and Setters
+def get_current_profits():
+    return 0
+
+
+def get_current_units(symbol):
+    return 0
