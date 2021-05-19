@@ -19,8 +19,10 @@ def scheduler_t():
         print('- Running get_latest_percent_change_1h test')
         if should_buy():
             print('Target % met. Buying...')
+
         if should_sell():
             print('Trailing stop loss conditions met. Selling...')
+
         sleep(5)
 
 

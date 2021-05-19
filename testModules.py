@@ -8,14 +8,9 @@ _api_key = config._api_key
 cmc = CoinMarketCapAPI(_api_key)
 
 prices = {}  # Historical Data
-percentages_1h = []
+percentages_history_1h = []
 capital = 0  # Test Cash
 netProfitLoss = 0  # Positive = profit, Negative = loss
-
-
-def get_latest_eth():
-    cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
-    return cs_prices['last']
 
 
 def get_latest_pchange_1h():
@@ -28,6 +23,43 @@ def get_latest_pchange_1h():
     except ValueError:
         print('JSON decoding has failed')
 
+# Devise MACD Strategy
+def should_buy():
+    # Buy if percentage increase > 5
+    if get_latest_pchange_1h() > 5:
+        print("Percentage increased by 5% in last hour")
+        return True
+    return False
+
+def should_sell():
+    if get_latest_pchange_1h() < -10:
+        print("Percentage just dropped below -10% in last hour")
+        return True
+    return False
+
+# Getters and Setters
+def get_current_profits():
+    pass
+
+def get_percentages_1h():
+    return percentages_history_1h
+
+def get_prices():
+    return prices
+
+# Test Modules
+def test_buy(capital, netpl):
+    pass
+
+def test_sell():
+    pass
+
+
+# Prices
+
+def get_latest_eth():
+    cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
+    return cs_prices['last']
 
 def get_latest_prices():
     response = requests.get('https://www.coinspot.com.au/pubapi/latest')
@@ -42,35 +74,3 @@ def average_prices_hourly():
     for key in prices_hour_past:
         hourly_sum += float(prices[key])
     return hourly_sum / len(prices_hour_past)
-
-
-# Devise MACD Strategy
-def should_buy():
-    # Buy if percentage increase > 5
-    if get_latest_pchange_1h() > 5:
-        print("Percentage increased by 5%")
-        return True
-    return False
-
-def should_sell():
-    if get_latest_pchange_1h() < -10:
-        print("Percentage just dropped below -10%")
-        return True
-    return False
-
-# Getters and Setters
-def get_current_profits():
-    pass
-
-def get_percentages_1h():
-    return percentages_1h
-
-def get_prices():
-    return prices
-
-# Test Modules
-def test_buy(capital, netpl):
-    pass
-
-def test_sell():
-    pass
