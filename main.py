@@ -1,11 +1,11 @@
-from testModules import get_prices, store_price, test_buy, test_sell, average_prices_hourly, get_latest_custom
+from testModules import should_buy, should_sell, test_buy, test_sell
 from time import sleep
 from time import gmtime, strftime
 import threading
 
 
 def main_t():
-    get_latest_custom()
+    pass
 
 
 # Driver
@@ -14,17 +14,14 @@ if __name__ == '__main__':
 
 
 def scheduler_t():
-    # Store price and averages
     while True:
-        # Generate historical data
-        store_price(strftime('%Y-%m-%d %H:%M:%S', gmtime()))
-        # Generate Hourly Averages
-        if bool(get_prices() is False):
-            print("Dict empty!")
-        # else:
-            # print("Average price (Past Hour): " + str(average_prices_hourly()))
-
-        sleep(10)
+        # store_price(strftime('%Y-%m-%d %H:%M:%S', gmtime()))
+        print('- Running get_latest_percent_change_1h test')
+        if should_buy():
+            print('Target % met. Buying...')
+        if should_sell():
+            print('Trailing stop loss conditions met. Selling...')
+        sleep(5)
 
 
 b = threading.Thread(name='scheduler', target=scheduler_t)

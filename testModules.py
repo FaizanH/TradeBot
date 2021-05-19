@@ -1,12 +1,14 @@
-from coinspot import CoinSpot
+from coinmarketcapapi import CoinMarketCapAPI, CoinMarketCapAPIError
 import config
 import requests
+import json
 
 _api_key = config._api_key
-_api_secret = config._api_secret
 
-coin = CoinSpot(_api_key, _api_secret)
+cmc = CoinMarketCapAPI(_api_key)
+
 prices = {}  # Historical Data
+percentages_1h = []
 capital = 0  # Test Cash
 netProfitLoss = 0  # Positive = profit, Negative = loss
 
@@ -16,9 +18,13 @@ def get_latest_eth():
     return cs_prices['last']
 
 
-def get_latest_custom():
+def get_latest_pchange_1h():
     try:
-        print(coin.my_balances())
+        cmc_data = cmc.cryptocurrency_listings_latest().data
+        for x in cmc_data:
+             if (x['symbol'] == 'ADA'):
+                 p = json.loads(json.dumps(x))['quote']['USD']['percent_change_1h']
+                 return p
     except ValueError:
         print('JSON decoding has failed')
 
@@ -27,11 +33,8 @@ def get_latest_prices():
     response = requests.get('https://www.coinspot.com.au/pubapi/latest')
     return response.text
 
-
-# Generate historical data
 def store_price(currtime):
-    prices.__setitem__(currtime, get_latest_eth())
-
+    prices.__setitem__(currtime, get_prices())
 
 def average_prices_hourly():
     prices_hour_past = [key for key in prices if '2021-05-18 10:' in key.lower()]  # Filter timestamp keys
@@ -43,26 +46,31 @@ def average_prices_hourly():
 
 # Devise MACD Strategy
 def should_buy():
-    pass
-
+    # Buy if percentage increase > 5
+    if get_latest_pchange_1h() > 5:
+        print("Percentage increased by 5%")
+        return True
+    return False
 
 def should_sell():
-    pass
-
+    if get_latest_pchange_1h() < -10:
+        print("Percentage just dropped below -10%")
+        return True
+    return False
 
 # Getters and Setters
 def get_current_profits():
     pass
 
+def get_percentages_1h():
+    return percentages_1h
 
 def get_prices():
     return prices
 
-
 # Test Modules
 def test_buy(capital, netpl):
     pass
-
 
 def test_sell():
     pass
