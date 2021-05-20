@@ -13,6 +13,10 @@ capital = 0  # Test Cash
 netProfitLoss = 0  # Positive = profit, Negative = loss
 
 
+def get_latest_pchange_custom(initialprice, currentprice):
+    pchange = ((currentprice - initialprice)/initialprice) * 100
+    return pchange
+
 def get_latest_pchange_1h():
     try:
         cmc_data = cmc.cryptocurrency_listings_latest().data
@@ -24,10 +28,14 @@ def get_latest_pchange_1h():
         print('JSON decoding has failed')
 
 # Devise MACD Strategy
-def should_buy():
-    # Buy if percentage increase > 5
-    if get_latest_pchange_1h() > 5:
-        print("Percentage increased by 5% in last hour")
+def should_buy(pchange, interval):
+    # Buy if percentage > 5
+    # if get_latest_pchange_1h() > 5:
+    if pchange > 5 and interval <= 15:
+        print("Percentage increased by 5% in 15 minutes")
+        return True
+    elif pchange > 15 and interval > 15:
+        print("Percentage increased by 15% took longer than 15 minutes")
         return True
     return False
 
@@ -59,7 +67,7 @@ def test_sell():
 
 def get_latest_eth():
     cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
-    return cs_prices['last']
+    return cs_prices['ask']
 
 def get_latest_prices():
     response = requests.get('https://www.coinspot.com.au/pubapi/latest')
