@@ -13,8 +13,8 @@ netProfitLoss = 0  # Positive = profit, Negative = loss
 
 
 def percent_change_custom(pinitial, pcurrent):
-    p = ((pcurrent - pinitial)/pinitial) * 100
-    return p
+    p = ((float(pcurrent) - float(pinitial))/float(pinitial)) * 100
+    return str(p)
 
 
 # def get_latest_percent_1h():
@@ -32,13 +32,13 @@ def percent_change_custom(pinitial, pcurrent):
 
 
 def should_buy_sell_wait(p, interval):
-    if 15 > p > 5:
+    if 15 > float(p) > 5:
         print("Percentage INCREASE 5-15% over " + str(interval) + "min")
         return 'buy'
-    elif p > 15:
+    elif float(p) > 15:
         print("Percentage INCREASE over 15% over " + str(interval) + "min")
         return 'buy'
-    elif p <= -10:
+    elif float(p) <= -10:
         print("Percentage DROP >= -10% over " + str(interval) + "min")
     return ''
 
