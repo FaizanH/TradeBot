@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
 def scheduler_t():
     prices = []
-    initialprice = float(get_latest_eth())  # Needs to have atleast 2 elements to comapare
+    initialprice = float(9999)  # Needs to have atleast 2 elements to comapare
 
     sleep(5)
 
