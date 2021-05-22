@@ -1,6 +1,5 @@
-from testModules import percent_change_custom, get_latest_eth, should_buy_sell_wait, test_buy, test_sell
+from testModules import percent_change_custom, get_latest_eth, should_buy_sell_wait, send_notify
 from time import sleep
-from time import gmtime, strftime
 import threading
 
 
@@ -14,6 +13,7 @@ def main_t():
 # Driver
 if __name__ == '__main__':
     print('--- Welcome to TSM ---\n')
+    send_notify("test msg")
 
 
 def scheduler_t():
@@ -71,5 +71,5 @@ def scheduler_t():
 b = threading.Thread(name='scheduler', target=scheduler_t)
 f = threading.Thread(name='foreground', target=main_t)
 
-b.start()
+# b.start()
 f.start()

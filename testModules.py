@@ -1,7 +1,7 @@
 from coinmarketcapapi import CoinMarketCapAPI, CoinMarketCapAPIError
 import config
 import requests
-import json
+import discconf
 
 # _api_key = config._api_key
 # cmc = CoinMarketCapAPI(_api_key)
@@ -12,31 +12,11 @@ capital = 0  # Test Cash
 netProfitLoss = 0  # Positive = profit, Negative = loss
 
 
-def percent_change_custom(pinitial, pcurrent):
-    p = ((float(pcurrent) - float(pinitial))/float(pinitial)) * 100
+def percent_change_custom(price_prev, price_curr):
+    p = ((float(price_curr) - float(price_prev))/float(price_prev)) * 100
     return str(p)
 
 
-# def get_latest_percent_1h():
-#     try:
-#         cmc_data = cmc.cryptocurrency_listings_latest().data
-#         for x in cmc_data:
-#             if x['symbol'] == 'ADA':
-#                 p = json.loads(json.dumps(x))['quote']['USD']['percent_change_1h']
-#                 return p
-#     except ValueError:
-#         print('JSON decoding has failed')
-
-
-# Devise MACD Strategy
-
-# 5% increase in 2.5 min
-# obvious - 2.5 2.5 2.5
-
-# 15% increase in
-# big negative value in large window
-# small positive in small window
-# buying the dip
 def should_buy_sell_wait(p, interval):
     # Check 1m, 2.5m, 5m, 7.5m, 10m, 15m, 30, 1h, 3h
     # if 10 interval > 10% and 60 interval positive and 180 interval positive
@@ -64,8 +44,16 @@ def should_buy_sell_wait(p, interval):
 
 
 # Simulation environment with account balance, crypto balance
-
 # Messenger notification api
+def send_notify(msg):
+    payload = {
+        'content': msg
+    }
+    header = {
+        'authorization': 'ODQ1NjQ5OTczNjc1OTUwMTYx.YKkDEg.oj5fAHC0FfUz9qXfDj3PiWr4qyY'
+    }
+    requests.post('https://discord.com/api/v9/channels/844078259729334315/messages',
+                  data=payload, headers=header)
 
 
 # Getters and Setters
@@ -90,7 +78,15 @@ def test_sell():
     pass
 
 
-# Prices
+# def get_latest_percent_1h():
+#     try:
+#         cmc_data = cmc.cryptocurrency_listings_latest().data
+#         for x in cmc_data:
+#             if x['symbol'] == 'ADA':
+#                 p = json.loads(json.dumps(x))['quote']['USD']['percent_change_1h']
+#                 return p
+#     except ValueError:
+#         print('JSON decoding has failed')
 
 def get_latest_eth():
     cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
