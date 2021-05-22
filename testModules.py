@@ -30,8 +30,27 @@ def percent_change_custom(pinitial, pcurrent):
 
 # Devise MACD Strategy
 
+# 5% increase in 2.5 min
+# obvious - 2.5 2.5 2.5
 
+# 15% increase in
+# big negative value in large window
+# small positive in small window
+# buying the dip
 def should_buy_sell_wait(p, interval):
+    # Check 1m, 2.5m, 5m, 7.5m, 10m, 15m, 30, 1h, 3h
+    # if 10 interval > 10% and 60 interval positive and 180 interval positive
+
+    # Notify speed fast increase
+
+    # Notify speed slow increase - Uptrend
+
+    # Trailing stop loss notification
+    # Set buy_price = peak
+    # Latest peak compared to current price
+    # If current price < latest peak * 95%
+    # Price has dropped 5%, sell
+
     if 15 > float(p) > 5:
         print("Percentage INCREASE 5-15% over " + str(interval) + "min")
         return 'buy'
@@ -40,14 +59,13 @@ def should_buy_sell_wait(p, interval):
         return 'buy'
     elif float(p) <= -10:
         print("Percentage DROP >= -10% over " + str(interval) + "min")
+        return 'sell'
     return ''
 
 
-def should_sell():
-    # if get_latest_percent_1h() < -10:
-    #     print("Percentage just dropped below -10% in last hour")
-    #     return True
-    return False
+# Simulation environment with account balance, crypto balance
+
+# Messenger notification api
 
 
 # Getters and Setters
