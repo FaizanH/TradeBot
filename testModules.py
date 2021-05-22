@@ -88,7 +88,7 @@ def should_buy_sell_wait(pi_1, pi_3, pi_5, pi_7, pi_10, pi_15, pi_30, pi_60, pi_
     recent_outcome = backtest_recent(pi_1, pi_3, pi_5, pi_10)
     trend = backtest_trend(pi_30, pi_60, pi_180)
 
-    if trend != '' and recent_outcome != '':
+    if trend != '' or recent_outcome != '':
         return '-- TREND INFORMATION --\n\n' + trend + '\n\n' + '-- RECENT OUTCOMES --\n\n' + recent_outcome
     return ''
 
