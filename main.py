@@ -52,7 +52,8 @@ def scheduler_t():
               + str(pi_10) + ' | ' + str(pi_30))  # last 4 = 10MIN, last 12 = 30MIN
 
         analysis = should_buy_sell_wait(pi_1, pi_3, pi_5, pi_7, pi_10, pi_15, pi_30, pi_60, pi_180, interval)
-        send_notify(analysis)
+        if interval > 10:
+            send_notify(analysis)
         if analysis != '':
             print(analysis)
 
@@ -63,7 +64,7 @@ def scheduler_t():
             for x in prices:
                 file.write(strftime('%Y-%m-%d %H:%M:%S', gmtime()) + ' - ' + x + '\n')
             file.close()
-        sleep(3)  # Check at 1 minute intervals
+        sleep(60)  # Check at 1 minute intervals
 
 
 b = threading.Thread(name='scheduler', target=scheduler_t)
