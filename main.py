@@ -1,75 +1,73 @@
 from testModules import percent_change_custom, get_latest_eth, should_buy_sell_wait, send_notify
-from time import sleep
+from time import sleep, gmtime, strftime
 import threading
-
 
 print('Price initialisation successful')
 
 
 def main_t():
+    # store_price(strftime('%Y-%m-%d %H:%M:%S', gmtime()))
+    # for n in range(1, 24):
+    #     if interval == n * 12:
+    #     Dump to file
     pass
 
 
 # Driver
 if __name__ == '__main__':
     print('--- Welcome to TSM ---\n')
-    send_notify("test msg")
 
 
 def scheduler_t():
-    interval = 0
-    p = 0
     prices = []
-    per_2_5 = 0
-    per_10 = 0
-    per_30 = 0
-
+    interval = 0
+    pi_1, pi_3, pi_5, pi_7, pi_10, pi_15, pi_30, pi_60, pi_180 = 0, 0, 0, 0, 0, 0, 0, 0, 0
+    ps_1, ps_3, ps_5, ps_7, ps_10, ps_15, ps_30, ps_60, ps_180 = 0, 0, 0, 0, 0, 0, 0, 0, 0
     sleep(5)
 
     print('- RUNNING 2.5/15 TESTS\n')
     print('- DO NOT USE DATA FROM FIRST INTERVAL\n')
-    print('TIME | $PRICE | % Δ 2.5MIN | % Δ 10MIN | % Δ 30MIN')
+    print('TIME | $PRICE | % Δ/MIN | % Δ/3MIN | % Δ/5MIN | % Δ/10MIN | % Δ/30MIN')
     while True:
-        # Append to file instead or using sliding window approach
+        # Append to file instead
         prices.append(get_latest_eth())
 
-        if interval >= 2.5:
-            start_price_2_5 = prices[-2]
-            per_2_5 = percent_change_custom(start_price_2_5, prices[-1])
+        if interval >= 1:
+            ps_1 = prices[-1]
+            pi_1 = percent_change_custom(ps_1, prices[-1])
+        if interval >= 3:
+            ps_3 = prices[-3]
+            pi_3 = percent_change_custom(ps_3, prices[-1])
+        if interval >= 5:
+            ps_5 = prices[-3]
+            pi_5 = percent_change_custom(ps_5, prices[-1])
         if interval >= 10:
-            start_price_10 = prices[-4]
-            per_10 = percent_change_custom(start_price_10, prices[-1])
+            ps_10 = prices[-10]
+            pi_10 = percent_change_custom(ps_10, prices[-1])
         if interval >= 30:
-            start_price_30 = prices[-12]
-            per_30 = percent_change_custom(start_price_30, prices[-1])
+            ps_30 = prices[-30]
+            pi_30 = percent_change_custom(ps_30, prices[-1])
 
-        print(str(interval) + ' | ' + prices[-1] + ' | ' + str(per_2_5) + ' | ' + str(per_10) + ' | ' + str(per_30))
-        # last 4 = 10MIN, last 12 = 30MIN
+        print(str(interval) + ' | ' + prices[-1] + ' | ' + str(pi_1) + ' | ' + str(pi_3) + ' | ' + str(pi_5) + ' | '
+              + str(pi_10) + ' | ' + str(pi_30))  # last 4 = 10MIN, last 12 = 30MIN
 
-        if interval % 2.5 == 0 and interval != 0:
-            pass
-        elif interval % 10 == 0 and interval != 0:
-            print('10MIN TRAIL SET')
-        elif interval % 30 == 0 and interval != 0:
-            print('30MIN TRAIL SET')
+        analysis = should_buy_sell_wait(pi_1, pi_3, pi_5, pi_7, pi_10, pi_15, pi_30, pi_60, pi_180, interval)
+        send_notify(analysis)
+        if analysis != '':
+            print(analysis)
 
-        # outcome = should_buy_sell_wait(p, interval)
-        #
-        # if outcome == 'buy' and interval > 2.5:
-        #     print('Buying...')
-        # elif outcome == 'sell':
-        #     print('Selling...')
-        # elif outcome == 'wait':
-        #     print('Waiting...')
+        interval += 1
 
-        interval += 2.5
-        sleep(5)  # Check at 2.5 minute intervals
-
-# store_price(strftime('%Y-%m-%d %H:%M:%S', gmtime()))
+        if interval == 6 or interval == 7200 or interval == 10800 or interval == 14400 or interval == 18000:
+            file = open("logs/Exchange_Price_log.txt", "w")
+            for x in prices:
+                file.write(strftime('%Y-%m-%d %H:%M:%S', gmtime()) + ' - ' + x + '\n')
+            file.close()
+        sleep(3)  # Check at 1 minute intervals
 
 
 b = threading.Thread(name='scheduler', target=scheduler_t)
 f = threading.Thread(name='foreground', target=main_t)
 
-# b.start()
+b.start()
 f.start()
