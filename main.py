@@ -58,12 +58,12 @@ def scheduler_t():
 
         interval += 1
 
-        if interval == 6 or interval == 7200 or interval == 10800 or interval == 14400 or interval == 18000:
+        if interval == 3600 or interval == 7200 or interval == 10800 or interval == 14400 or interval == 18000:
             file = open("logs/Exchange_Price_log.txt", "w")
             for x in prices:
                 file.write(strftime('%Y-%m-%d %H:%M:%S', gmtime()) + ' - ' + x + '\n')
             file.close()
-        sleep(3)  # Check at 1 minute intervals
+        sleep(60)  # Check at 1 minute intervals
 
 
 b = threading.Thread(name='scheduler', target=scheduler_t)
