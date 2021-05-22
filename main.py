@@ -52,9 +52,8 @@ def scheduler_t():
               + str(pi_10) + ' | ' + str(pi_30))  # last 4 = 10MIN, last 12 = 30MIN
 
         analysis = should_buy_sell_wait(pi_1, pi_3, pi_5, pi_7, pi_10, pi_15, pi_30, pi_60, pi_180, interval)
-        if interval > 10:
+        if interval > 10 and analysis != '':
             send_notify(analysis)
-        if analysis != '':
             print(analysis)
 
         interval += 1
