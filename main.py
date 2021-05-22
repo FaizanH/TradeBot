@@ -33,7 +33,7 @@ def scheduler_t():
         prices.append(get_latest_eth())
 
         if interval >= 1:
-            ps_1 = prices[-1]
+            ps_1 = prices[-2]
             pi_1 = percent_change_custom(ps_1, prices[-1])
         if interval >= 3:
             ps_3 = prices[-3]
@@ -63,7 +63,7 @@ def scheduler_t():
             for x in prices:
                 file.write(strftime('%Y-%m-%d %H:%M:%S', gmtime()) + ' - ' + x + '\n')
             file.close()
-        sleep(60)  # Check at 1 minute intervals
+        sleep(3)  # Check at 1 minute intervals
 
 
 b = threading.Thread(name='scheduler', target=scheduler_t)
