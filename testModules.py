@@ -26,48 +26,52 @@ def backtest_stoploss():
 def backtest_vshort(pi_1, pi_3, pi_5, pi_10):
     r = ''
     if pi_1 > 0.3:
-        r += 'RISE DETECTED (PREMATURE) - \n' + pi_1 + '% / MIN\n'
+        r += 'RISE DETECTED (PREMATURE) - \n' + str(pi_1) + '% / MIN\n'
         if pi_3 > 0.5:
-            r += pi_3 + '% / 2.5MIN\n'
+            r += str(pi_3) + '% / 2.5MIN\n'
             if pi_5 > 1:
-                r += pi_5 + '% / 5MIN\n'
+                r += str(pi_5) + '% / 5MIN\n'
     return r
 
 
 def backtest_recent(pi_1, pi_3, pi_5, pi_10):
     r = ''
     # Spike test 10 mins
-    if pi_10 > 5:
-        r = 'RISE DETECTED - ' + pi_10 + '% / 10MIN\n'
+    if pi_10 > 10:
+        r = 'RISE DETECTED: ' + str(pi_10) + '% / 10MIN\n'
         # Only show the rest if the are positive
         if pi_5 > 0:
-            r += pi_5 + '% / 5MIN\n'
+            r += str(pi_5) + '% / 5MIN\n'
             if pi_3 > 0:
-                r += pi_3 + '% / 2.5MIN'
+                r += str(pi_3) + '% / 2.5MIN'
     elif pi_10 < -5:
-        r = 'DROP DETECTED -' + pi_10 + '% / 10MIN\n'
+        r = 'DROP DETECTED: ' + str(pi_10) + '% / 10MIN\n'
         # Only show the rest if the are negative
         if pi_5 < 0:
-            r += pi_5 + '% / 5MIN\n'
+            r += str(pi_5) + '% / 5MIN\n'
             if pi_3 < 0:
-                r += pi_3 + '% / 2.5MIN\n'
+                r += str(pi_3) + '% / 2.5MIN\n'
                 if pi_1 < 0:
-                    r += pi_1 + '% / MIN'
+                    r += str(pi_1) + '% / MIN'
     # Fixed stop loss detection
+    if pi_5 > 7:
+        r = 'RISE DETECTED: ' + str(pi_5) + '% / 5MIN'
+    if pi_3 > 5:
+        r = 'RISE DETECTED: ' + str(pi_3) + '% / 3MIN'
     if pi_1 > 3:
-        r = 'INSANE RISE DETECTED -' + pi_1 + '% / MIN'
+        r = 'RISE DETECTED: ' + str(pi_1) + '% / MIN'
     if pi_1 < -3:
-        r = 'INSANE DROP DETECTED -' + pi_1 + '% / MIN'
+        r = 'DROP DETECTED: ' + str(pi_1) + '% / MIN'
     return r
 
 
 def backtest_trend(pi_30, pi_60, pi_180):
     r = ''
     # BTest - Long
-    if pi_180 > 0:
-        r += '3H UPTREND DETECTED'
-    if pi_30 > 0:
-        r += '30MIN UPTREND DETECTED'
+    if pi_180 > 0.3:
+        r += '3H UPTREND DETECTED\n'
+    if pi_30 > 0.1:
+        r += '30MIN UPTREND DETECTED\n'
     return r
 
 
@@ -84,13 +88,15 @@ def should_buy_sell_wait(pi_1, pi_3, pi_5, pi_7, pi_10, pi_15, pi_30, pi_60, pi_
     # 30  |
     # 60  |
     # 180 |
-
+    analysis = ''
     recent_outcome = backtest_recent(pi_1, pi_3, pi_5, pi_10)
     trend = backtest_trend(pi_30, pi_60, pi_180)
 
-    if trend != '' or recent_outcome != '':
-        return '-- TREND INFORMATION --\n\n' + trend + '\n\n' + '-- RECENT OUTCOMES --\n\n' + recent_outcome
-    return ''
+    # if trend != '':
+    #     analysis += '-- TREND INFORMATION --\n' + trend + '\n\n'
+    if recent_outcome != '':
+        analysis = '\n' + recent_outcome + '\n'
+    return analysis
 
 
 # Simulation environment with account balance, crypto balance
@@ -105,8 +111,11 @@ def send_notify(msg):
     header = {
         'authorization': 'ODQ1NjQ5OTczNjc1OTUwMTYx.YKkDEg.oj5fAHC0FfUz9qXfDj3PiWr4qyY'
     }
-    requests.post('https://discord.com/api/v9/channels/844078259729334315/messages',
-                  data=payload, headers=header)
+    try:
+        requests.post('https://discord.com/api/v9/channels/845880997479579669/messages',
+                      data=payload, headers=header)
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
 
 
 # Getters and Setters
@@ -142,12 +151,23 @@ def test_sell():
 #         print('JSON decoding has failed')
 
 def get_latest_eth():
-    cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
+    try:
+        cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
+    return cs_prices['ask']
+
+
+def get_latest_ada():
+    try:
+        cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ADA').json()['prices']
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
     return cs_prices['ask']
 
 
 def get_latest_prices():
-    response = requests.get('https://www.coinspot.com.au/pubapi/latest')
+    response = requests.get('https://www.coinspot.com.au/pubapi/latest').json()
     return response.text
 
 
