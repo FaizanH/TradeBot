@@ -36,33 +36,47 @@ def backtest_vshort(pi_1, pi_3, pi_5, pi_10):
 
 def backtest_recent(pi_1, pi_3, pi_5, pi_10):
     r = ''
-    # Spike test 10 mins
-    if pi_10 > 10:
-        r = 'RISE DETECTED: ' + str(pi_10) + '% / 10MIN\n'
-        # Only show the rest if the are positive
-        if pi_5 > 0:
-            r += str(pi_5) + '% / 5MIN\n'
-            if pi_3 > 0:
-                r += str(pi_3) + '% / 2.5MIN'
-    elif pi_10 < -5:
-        r = 'DROP DETECTED: ' + str(pi_10) + '% / 10MIN\n'
-        # Only show the rest if the are negative
-        if pi_5 < 0:
-            r += str(pi_5) + '% / 5MIN\n'
-            if pi_3 < 0:
-                r += str(pi_3) + '% / 2.5MIN\n'
-                if pi_1 < 0:
-                    r += str(pi_1) + '% / MIN'
-    # Fixed stop loss detection
-    if pi_5 > 7:
-        r = 'RISE DETECTED: ' + str(pi_5) + '% / 5MIN'
-    if pi_3 > 5:
-        r = 'RISE DETECTED: ' + str(pi_3) + '% / 3MIN'
-    if pi_1 > 3:
-        r = 'RISE DETECTED: ' + str(pi_1) + '% / MIN'
-    if pi_1 < -3:
-        r = 'DROP DETECTED: ' + str(pi_1) + '% / MIN'
+    if pi_1 > 2:
+        r = 'RISE DETECTED: ' + str(pi_1) + '% / MIN\n'
+        if pi_3 > 3:
+            r += str(pi_3) + '% / 3MIN\n'
+            if pi_5 > 2:
+                r += str(pi_5) + '% / 5MIN\n'
+                if pi_10 > 3:
+                    r += str(pi_10) + '% / 10MIN\n'
+    if pi_1 < -2:
+        r = 'DIP DETECTED: ' + str(pi_1) + '% / MIN\n'
+        if pi_3 < -3:
+            r += str(pi_3) + '% / 3MIN\n'
+            if pi_5 < -2:
+                r += str(pi_5) + '% / 5MIN\n'
+                if pi_10 < -3:
+                    r += str(pi_10) + '% / 10MIN\n'
     return r
+    # Spike test 10 mins
+    # if pi_10 > 10:
+    #     r = 'RISE DETECTED: ' + str(pi_10) + '% / 10MIN\n'
+    #     # Only show the rest if the are positive
+    #     if pi_5 > 0:
+    #         r += str(pi_5) + '% / 5MIN\n'
+    #         if pi_3 > 0:
+    #             r += str(pi_3) + '% / 2.5MIN'
+    # elif pi_10 < -5:
+    #     r = 'DROP DETECTED: ' + str(pi_10) + '% / 10MIN\n'
+    #     # Only show the rest if the are negative
+    #     if pi_5 < 0:
+    #         r += str(pi_5) + '% / 5MIN\n'
+    #         if pi_3 < 0:
+    #             r += str(pi_3) + '% / 2.5MIN\n'
+    #             if pi_1 < 0:
+    #                 r += str(pi_1) + '% / MIN'
+    # Fixed stop loss detection
+    # if pi_5 > 7:
+    #     r = '5M RISE DETECTED: ' + str(pi_5) + '% / 5MIN'
+    # if pi_3 > 5:
+    #     r = '3M RISE DETECTED: ' + str(pi_3) + '% / 3MIN'
+    # if pi_10 > 10:
+    #     r = '10M RISE DETECTED: ' + str(pi_10) + '% / 10MIN'
 
 
 def backtest_trend(pi_30, pi_60, pi_180):
@@ -155,7 +169,7 @@ def get_latest_eth():
         cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ETH').json()['prices']
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
-    return cs_prices['ask']
+    return cs_prices['bid']
 
 
 def get_latest_ada():
@@ -163,12 +177,12 @@ def get_latest_ada():
         cs_prices = requests.get('https://www.coinspot.com.au/pubapi/latest/ADA').json()['prices']
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
-    return cs_prices['ask']
+    return cs_prices['bid']
 
 
-def get_latest_prices():
-    response = requests.get('https://www.coinspot.com.au/pubapi/latest').json()
-    return response.text
+# def get_latest_prices():
+#     response = requests.get('https://www.coinspot.com.au/pubapi/latest').json()
+#     return response.text
 
 
 # def store_price(currtime):

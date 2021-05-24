@@ -20,7 +20,7 @@ if __name__ == '__main__':
     time = "SCRIPT STARTED - " + str(datetime.now(tz))
     print(time)
     print('- DO NOT USE DATA FROM FIRST INTERVAL\n')
-    print('TIME | $ETH | $ADA | % Δ/MIN | % Δ/3MIN | % Δ/5MIN | % Δ/10MIN | % Δ/30MIN')
+    print('TIME | $ADA | $ETH | % Δ/MIN | % Δ/3MIN | % Δ/5MIN | % Δ/10MIN | % Δ/30MIN')
     send_notify(time)
     while True:
         # Append to file instead
@@ -28,22 +28,22 @@ if __name__ == '__main__':
         prices_ada.append(get_latest_ada())
 
         if interval >= 1:
-            ps_1 = prices[-2]
-            pi_1 = percent_change_custom(ps_1, prices[-1])
+            ps_1 = prices_ada[-2]
+            pi_1 = percent_change_custom(ps_1, prices_ada[-1])
         if interval >= 3:
-            ps_3 = prices[-3]
-            pi_3 = percent_change_custom(ps_3, prices[-1])
+            ps_3 = prices_ada[-3]
+            pi_3 = percent_change_custom(ps_3, prices_ada[-1])
         if interval >= 5:
-            ps_5 = prices[-3]
-            pi_5 = percent_change_custom(ps_5, prices[-1])
+            ps_5 = prices_ada[-3]
+            pi_5 = percent_change_custom(ps_5, prices_ada[-1])
         if interval >= 10:
-            ps_10 = prices[-10]
-            pi_10 = percent_change_custom(ps_10, prices[-1])
+            ps_10 = prices_ada[-10]
+            pi_10 = percent_change_custom(ps_10, prices_ada[-1])
         if interval >= 30:
-            ps_30 = prices[-30]
-            pi_30 = percent_change_custom(ps_30, prices[-1])
+            ps_30 = prices_ada[-30]
+            pi_30 = percent_change_custom(ps_30, prices_ada[-1])
 
-        line = str(interval) + 'MINS | ' + prices[-1] + ' | ' + prices_ada[-1] + ' | ' + str(pi_1) + ' | ' + str(pi_3)\
+        line = str(interval) + 'MINS | ' + prices_ada[-1] + ' | ' + prices[-1] + ' | ' + str(pi_1) + ' | ' + str(pi_3)\
             + ' | ' + str(pi_5) + ' | ' + str(pi_10) + ' | ' + str(pi_30)
         print(line)  # last 4 = 10MIN, last 12 = 30MIN
 
