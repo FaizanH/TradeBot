@@ -7,7 +7,7 @@
 
 ------------
 #### Project Board
-https://github.com/FaizanH/TradeBot/projects
+[https://github.com/FaizanH/TradeBot/projects](https://github.com/users/sfaizh/projects/2/views/1)
 #### Useful links
 Latest Prices: https://www.coinspot.com.au/pubapi/latest
   
